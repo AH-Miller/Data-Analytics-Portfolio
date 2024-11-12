@@ -37,7 +37,7 @@ knit_hooks$set(output = function(x, options)
 
 ```
 
-# Solution template for Task 1
+# Solution for Task 1
 
 This file is a solution template for the Task 1 of the Quantium Virtual Internship.
 It will walk you through the analysis, providing the scaffolding for your solution
@@ -215,7 +215,7 @@ if there are any obvious data issues such as missing data.
 # Over to you! Create a summary of transaction count by date.
 vec_transactions_by_day <- tapply(transactionData, transactionData$DATE, nrow)
 length(vec_transactions_by_day)
-# length(unique(transactionData$DATE))
+#transactionData[, .N, by = DATE]
 ```
 
 There's only 364 rows, meaning only 364 dates which indicates a missing date. Let's
