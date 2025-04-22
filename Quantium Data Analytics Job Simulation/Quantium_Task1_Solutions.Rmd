@@ -39,27 +39,8 @@ knit_hooks$set(output = function(x, options)
 
 # Solution for Task 1
 
-This file is a solution template for the Task 1 of the Quantium Virtual Internship.
-It will walk you through the analysis, providing the scaffolding for your solution
-with gaps left for you to fill in yourself. 
-
-Look for comments that say "over to you" for places where you need to add your own
-code!
-
-Often, there will be hints about what to do or what function to use in the text
-leading up to a code block - if you need a bit of extra help on how to use a
-function, the internet has many excellent resources on R coding, which you can find
-using your favourite search engine.
-
 ## Load required libraries and datasets
-Note that you will need to install these libraries if you have never used these
-before.
-
 ```{r 0 Load Libraries, results = 'hide'}
-#### Example code to install packages
-#install.packages("data.table")
-#install.packages("ggmosaic")
-
 #### Load required libraries
 library(data.table)
 library(ggplot2)
@@ -69,9 +50,6 @@ library(dplyr)
 
 #### Point the filePath to where you have downloaded the datasets to and
 #### assign the data files to data.tables
-
-# over to you! fill in the path to your working directory. If you are on a Windows
-# machine, you will need to use forward slashes (/) instead of backshashes (\)
 
 filePath <- "/Users/al/career/Quantium/"
 transactionData <- fread(paste0(filePath,"QVI_transaction_data.csv"))
@@ -83,22 +61,15 @@ The first step in any analysis is to first understand the data. Let's take a loo
 at each of the datasets provided.
 
 ### Examining transaction data
-We can use `str()` to look at the format of each column and see a sample of the
-data. As we have read in the dataset as a `data.table` object, we can also run
-`transactionData` in the console to see a sample of the data or use
-`head(transactionData)` to look at the first 10 rows.
-
 Let's check if columns we would expect to be numeric are in numeric form and date
 columns are in date format.
 ```{r Examining transaction data}
 #### Examine transaction data
-# Over to you! Examine the data using one or more of the methods described above.
 str(transactionData)
 ```
 
 We can see that the date column is in an integer format. Let's change this to a
 date format.
-
 ```{r Convert DATE to date format}
 #### Convert DATE column to a date format
 #### A quick search online tells us that CSV and Excel integer dates begin on 30
@@ -110,7 +81,7 @@ We should check that we are looking at the right products by examining PROD_NAME
 
 ```{r Summary of PROD_NAME}
 #### Examine PROD_NAME
-# Over to you! Generate a summary of the PROD_NAME column.
+# Generate a summary of the PROD_NAME column.
 head(transactionData$PROD_NAME)
 ```
 
@@ -131,8 +102,7 @@ not, let's remove all words with digits and special characters such as '&' from 
 set of product words. We can do this using `grepl()`.
 
 ```{r}
-
-# Over to you! Remove digits, and special characters, and then sort the distinct
+# Remove digits, and special characters, and then sort the distinct
 # words by frequency of occurrence.
 
 #### Removing digits
@@ -166,8 +136,6 @@ the output if there are any nulls).
 
 ```{r initial summary}
 #### Summarise the data to check for nulls and possible outliers
-
-# Over to you!
 summary(transactionData)
 ```
 
@@ -178,7 +146,7 @@ packets of chips are bought in one transaction.
 ```{r }
 #### Filter the dataset to find the outlier
 
-# Over to you! Use a filter to examine the transactions in question.
+# Use a filter to examine the transactions in question.
 transactionData[transactionData$PROD_QTY == 200]
 ```
 
@@ -188,7 +156,7 @@ and both of these transactions were by the same customer.
 ```{r}
 #### Let's see if the customer has had other transactions
 
-# Over to you! Use a filter to see what other transactions that customer made.
+# Use a filter to see what other transactions that customer made.
 transactionData[transactionData$LYLTY_CARD_NBR == 226000]
 ```
 
@@ -198,11 +166,9 @@ purposes instead. We'll remove this loyalty card number from further analysis.
 
 ```{r}
 #### Filter out the customer based on the loyalty card number
-# Over to you!
 transactionData <- transactionData[transactionData$LYLTY_CARD_NBR != 226000]
 
 #### Re-examine transaction data
-# Over to you!
 summary(transactionData)
 ```
 
@@ -212,7 +178,7 @@ if there are any obvious data issues such as missing data.
 ```{r}
 #### Count the number of transactions by date
 
-# Over to you! Create a summary of transaction count by date.
+# Create a summary of transaction count by date.
 vec_transactions_by_day <- tapply(transactionData, transactionData$DATE, nrow)
 length(vec_transactions_by_day)
 #transactionData[, .N, by = DATE]
@@ -225,7 +191,7 @@ chart of number of transactions over time to find the missing date.
 ```{r fig.align = "center"}
 #### Create a sequence of dates and join this the count of transactions by date
 
-# Over to you - create a column of dates that includes every day from 1 Jul 2018 to
+# Create a column of dates that includes every day from 1 Jul 2018 to
 # 30 Jun 2019, and join it onto the data to fill in the missing day.
 transactions_by_day <- data.frame(DATE = as.Date(names(vec_transactions_by_day)),
                                   N = as.integer(vec_transactions_by_day))
@@ -256,7 +222,7 @@ December. Let's zoom in on this.
 ```{r fig.align = "center"}
 #### Filter to December and look at individual days
 
-# Over to you - recreate the chart above zoomed in to the relevant dates.
+# Recreate the chart above zoomed in to the relevant dates.
 dec_transactions_by_day <- transactions_by_day[month(transactions_by_day$DATE) == 12,]
 
 #### Plot transactions over time
@@ -292,7 +258,7 @@ The largest size is 380g and the smallest size is 70g - seems sensible!
 #### Let's plot a histogram of PACK_SIZE since we know that it is a categorical
 #### variable and not a continuous variable even though it is numeric.
 
-# Over to you! Plot a histogram showing the number of transactions by pack size.
+# Plot a histogram showing the number of transactions by pack size.
 hist(transactionData[, PACK_SIZE], main="Number of transactions by pack size",
      ylab="Number of transactions", xlab="Pack size (g)")
 ```
@@ -304,11 +270,11 @@ name...
 
 ```{r Create brand name}
 #### Brands
-# Over to you! Create a column which contains the brand of the product, by
+# Create a column which contains the brand of the product, by
 # extracting it from the product name.
 transactionData[, BRAND := sub(" .*", "", PROD_NAME)]
 #### Checking brands
-# Over to you! Check the results look reasonable.
+# Check the results look reasonable.
 transactionData[, .N, BRAND][order(BRAND)]
 ```
 
@@ -318,9 +284,6 @@ RRD, which are both Red Rock Deli chips. Let's combine these together.
 ```{r Clean brand names}
 #### Clean brand names
 transactionData[BRAND == "RED", BRAND := "RRD"]
-
-# Over to you! Add any additional brand adjustments you think may be required.
-transactionData[BRAND == "RED", BRAND := "RRD"]
 transactionData[BRAND == "Snbts", BRAND := "Sunbites"]
 transactionData[BRAND == "WW", BRAND := "Woolworths"]
 transactionData[BRAND == "Smith", BRAND := "Smiths"]
@@ -328,8 +291,8 @@ transactionData[BRAND == "Natural", BRAND := "NCC"]
 transactionData[BRAND == "Infzns", BRAND := "Infuzions"]
 transactionData[BRAND == "Grain", BRAND := "GrnWves"]
 transactionData[BRAND == "Dorito", BRAND := "Doritos"]
+
 #### Check again
-# Over to you! Check the results look reasonable.
 transactionData[, .N, BRAND][order(BRAND)]
 ```
 
@@ -340,7 +303,7 @@ customer dataset.
 ```{r 1 Exploratory data analysis}
 #### Examining customer data
 
-# Over to you! Do some basic summaries of the dataset, including distributions of
+# Do some basic summaries of the dataset, including distributions of
 # any key columns.
 str(customerData)
 summary(customerData)
@@ -362,7 +325,7 @@ Let's also check if some customers were not matched on by checking for nulls.
 
 ```{r Check for missing customer details}
 
-# Over to you! See if any transactions did not have a matched customer.
+# See if any transactions did not have a matched customer.
 sum(is.na(data$LYLTY_CARD_NBR))
 ```
 
@@ -402,7 +365,7 @@ most to chip sales.
 ```{r fig.width = 10, fig.align = "center"}
 #### Total sales by LIFESTAGE and PREMIUM_CUSTOMER
 
-# Over to you! Calculate the summary of sales by those dimensions and create a
+# Calculate the summary of sales by those dimensions and create a
 # plot.
 sales_summary <- data %>%
   group_by(LIFESTAGE, PREMIUM_CUSTOMER) %>%
@@ -425,7 +388,7 @@ Let's see if the higher sales are due to there being more customers who buy chip
 ```{r fig.width = 10, fig.align = "center"}
 #### Number of customers by LIFESTAGE and PREMIUM_CUSTOMER
 
-# Over to you! Calculate the summary of number of customers by those dimensions and
+# Calculate the summary of number of customers by those dimensions and
 # create a plot.
 total_cust_summary <- data %>%
   group_by(LIFESTAGE, PREMIUM_CUSTOMER) %>%
@@ -448,7 +411,7 @@ Let's have a look at this next.
 ```{r fig.width = 10, fig.align = "center"}
 #### Average number of units per customer by LIFESTAGE and PREMIUM_CUSTOMER
 
-# Over to you! Calculate and plot the average number of units per customer by those
+# Calculate and plot the average number of units per customer by those
 # two dimensions.
 total_cust_units <- data %>%
   group_by(LYLTY_CARD_NBR) %>%
@@ -474,7 +437,7 @@ segment as this is also a driver of total sales.
 ```{r fig.width = 10, fig.align = "center"}
 #### Average price per unit by LIFESTAGE and PREMIUM_CUSTOMER
 
-# Over to you! Calculate and plot the average price per unit sold (average sale
+# Calculate and plot the average price per unit sold (average sale
 # price) by those two customer dimensions.
 
 price_per_unit_summary <- data %>%
@@ -502,7 +465,7 @@ difference is statistically different.
 #### Perform an independent t-test between mainstream vs premium and budget
 #### midage and young singles and couples
 
-# Over to you! Perform a t-test to see if the difference is significant.
+# Perform a t-test to see if the difference is significant.
 data[, price_per_unit := TOT_SALES/PROD_QTY]
 
 lifestages <- c("YOUNG SINGLES/COUPLES", "MIDAGE SINGLES/COUPLES")
@@ -530,7 +493,7 @@ brand of chips.
 ```{r fig.align = "center"}
 #### Deep dive into Mainstream, young singles/couples
 
-# Over to you! Work out if there are brands that these two customer segments
+# Work out if there are brands that these two customer segments
 # prefer more than others. You could use a technique called affinity analysis or
 # a-priori analysis (or any other method if you prefer)
 target <- data[LIFESTAGE == "YOUNG SINGLES/COUPLES" & PREMIUM_CUSTOMER == "Mainstream",]
@@ -563,7 +526,7 @@ Let's also find out if our target segment tends to buy larger packs of chips.
 ```{r fig.align = "center"}
 #### Preferred pack size compared to the rest of the population
 
-# Over to you! Do the same for pack size.
+# Do the same for pack size.
 target_pack_size <- target[, .(
   target_segment = sum(PROD_QTY) / target[, sum(PROD_QTY)]
 ), by = PACK_SIZE]
